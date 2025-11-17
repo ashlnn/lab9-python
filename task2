@@ -1,0 +1,100 @@
+import json
+
+file_name = "employees.json"
+result_file = "result.json"
+
+def load_data():
+    try:
+        with open(file_name, "r", encoding="utf-8") as f:
+            return json.load(f)
+    except:
+        data = [
+            {"surname": "Іваненко", "salary": 12000, "position": "Менеджер", "gender": "M"},
+            {"surname": "Петренко", "salary": 15000, "position": "Бухгалтер", "gender": "F"},
+            {"surname": "Коваленко", "salary": 11000, "position": "Інженер", "gender": "M"},
+            {"surname": "Сидоренко", "salary": 17000, "position": "Директор", "gender": "M"},
+            {"surname": "Мельник", "salary": 9000, "position": "Охорона", "gender": "M"},
+            {"surname": "Ткаченко", "salary": 16000, "position": "Маркетолог", "gender": "F"},
+            {"surname": "Бондар", "salary": 13000, "position": "Продажі", "gender": "F"},
+            {"surname": "Литвин", "salary": 9500, "position": "Склад", "gender": "M"},
+            {"surname": "Гнатюк", "salary": 10500, "position": "IT", "gender": "F"},
+            {"surname": "Романюк", "salary": 14000", "position": "HR", "gender": "F"}
+        ]
+        save_data(data)
+        return data
+
+def save_data(data):
+    with open(file_name, "w", encoding="utf-8") as f:
+        json.dump(data, f, ensure_ascii=False, indent=4)
+
+def show_data():
+    data = load_data()
+    for item in data:
+        print(item)
+
+def add_entry():
+    data = load_data()
+    surname = input("Прізвище: ")
+    salary = int(input("Зарплата: "))
+    position = input("Посада: ")
+    gender = input("Стать (M/F): ")
+    data.append({"surname": surname, "salary": salary, "position": position, "gender": gender})
+    save_data(data)
+    print("Додано.")
+
+def delete_entry():
+    data = load_data()
+    name = input("Введіть прізвище для видалення: ")
+    data = [d for d in data if d["surname"] != name]
+    save_data(data)
+    print("Видалено.")
+
+def search():
+    data = load_data()
+    field = input("Поле для пошуку (surname/salary/position/gender): ")
+    value = input("Значення: ")
+    if field == "salary":
+        value = int(value)
+    for d in data:
+        if d[field] == value:
+            print(d)
+
+def solve_task():
+    data = load_data()
+    min_emp = min(data, key=lambda x: x["salary"])
+    max_emp = max(data, key=lambda x: x["salary"])
+    res = {
+        "min_salary_employee": min_emp,
+        "max_salary_employee": max_emp
+    }
+    with open(result_file, "w", encoding="utf-8") as f:
+        json.dump(res, f, ensure_ascii=False, indent=4)
+    print("Результат записано у result.json")
+
+def menu():
+    while True:
+        print("\n1. Показати JSON")
+        print("2. Додати запис")
+        print("3. Видалити запис")
+        print("4. Пошук")
+        print("5. Знайти мін/макс зарплату")
+        print("6. Вихід")
+
+        choice = input("Ваш вибір: ")
+
+        if choice == "1":
+            show_data()
+        elif choice == "2":
+            add_entry()
+        elif choice == "3":
+            delete_entry()
+        elif choice == "4":
+            search()
+        elif choice == "5":
+            solve_task()
+        elif choice == "6":
+            break
+        else:
+            print("Невірний вибір.")
+
+menu()
